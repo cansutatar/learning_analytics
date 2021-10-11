@@ -1,0 +1,37 @@
+---
+title: "Spending Time & Earned Points"
+author: "Cansu Tatar"
+output: 
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+
+data_to_viz <- read_csv("data/data-to-explore.csv")
+
+data_to_viz  %>% 
+  mutate(subject = recode(subject, 
+                          "AnPhA" = "Anatomy",
+                          "BioA" = "Biology", 
+                          "FrScA" = "Forensics", 
+                          "OcnA" =  "Oceanography", 
+                          "PhysA" = "Physics")) %>%
+  mutate(proportion_earned = proportion_earned * 100) %>%
+  ggplot(mapping = aes(x = time_spent_hours, y = proportion_earned)) +
+  geom_point(position = "identity", na.rm = TRUE)+
+  geom_smooth(mapping = aes(color = subject), se = FALSE, na.rm = TRUE, method = "gam")+
+  ylim(0,100)+
+  xlim(0,50)+
+  labs(title = "Students' proportion earned based on their time spent in hours",
+       caption = "How does the relationship between time spent and proportion earned?")
+
+
+```
+
+This graph represents the students' total earned points and the amount of the time that they spent. As you can see, students who spent more time in the courses, earned more points. When we closely examine their performance in each subject, we found that students spent most of their time in physics classes. 
